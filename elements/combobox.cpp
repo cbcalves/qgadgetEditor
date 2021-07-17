@@ -8,13 +8,15 @@ ComboBox::ComboBox(const QMetaProperty& metaProperty, void* qGadget, QWidget *pa
     _qGadget(qGadget)
 {
     setup();
-    setEnabled(true);
-    setUpdatesEnabled(true);
+
     QObject::connect(this, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &ComboBox::change);
 }
 
 void ComboBox::setup()
 {
+    setEnabled(true);
+    setUpdatesEnabled(true);
+
     QStringList items;
 
     int keys = _metaProperty.enumerator().keyCount();

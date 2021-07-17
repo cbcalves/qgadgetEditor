@@ -8,6 +8,7 @@
 #include <QDebug>
 
 #include "elements/combobox.h"
+#include "elements/spinbox.h"
 
 EditorQGadget::EditorQGadget(const QString &tipo, void *qGadget, QWidget *parent) :
     QMainWindow(parent),
@@ -65,6 +66,7 @@ void EditorQGadget::decompor(const QString& tipo, void *qGadget, QWidget* parent
                     break;
                 case QMetaType::UChar: // quint8
                 case QMetaType::UShort: // quint16
+                    layout->addRow(label(metaProperty.name()), new SpinBox(metaProperty, qGadget));
                     qDebug() << metaProperty.name() << read.typeName() << read.toUInt();
                     break;
                 default: // ponteiro ou struct

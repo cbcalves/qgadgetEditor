@@ -18,6 +18,7 @@ add_executable(editorQGadget
   main.cpp
   editorqgadget.cpp
   elements/combobox.cpp
+  elements/spinbox.cpp
   player.h
   playertype.h
   p2d.h
