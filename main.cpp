@@ -3,7 +3,7 @@
 #include <QMetaMethod>
 #include <QMetaProperty>
 
-#include "player.h"
+#include "players/player.h"
 #include "editorqgadget.h"
 
 int main(int argc, char *argv[])
@@ -34,7 +34,9 @@ int main(int argc, char *argv[])
     test.setValue(player.m_coordinates);
 
     EditorQGadget editor("player::Player", &player);
-    editor.mostrar();
+    editor.edit();
 
-    return a.exec();
+    std::free(player.m_coordinates);
+
+    return EXIT_SUCCESS;
 }

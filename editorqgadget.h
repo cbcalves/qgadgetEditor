@@ -11,7 +11,13 @@ class EditorQGadget : public QMainWindow
 public:
     EditorQGadget(const QString& tipo, void *qGadget, QWidget* parent = nullptr);
 
-    void mostrar();
+    void edit();
+
+signals:
+    void closeProcess();
+
+protected:
+    void closeEvent(QCloseEvent *event) override;
 
 private:
     QString _tipo;

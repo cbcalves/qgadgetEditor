@@ -23,9 +23,9 @@ add_executable(editorQGadget
   elements/ptrformlayout.cpp
   elements/spinbox.cpp
   elements/qgadgetfactory.cpp
-  player.h
-  playertype.h
-  p2d.h
+  players/player.h
+  players/playertype.h
+  players/p2d.h
 )
 target_link_libraries(editorQGadget
     Qt${QT_VERSION_MAJOR}::Core

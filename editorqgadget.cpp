@@ -1,6 +1,8 @@
 #include "editorqgadget.h"
 
 #include <QFrame>
+#include <QEventLoop>
+#include <QCloseEvent>
 
 #include "elements/qgadgetfactory.h"
 
@@ -16,7 +18,16 @@ EditorQGadget::EditorQGadget(const QString &tipo, void *qGadget, QWidget *parent
     child->setParent(this);
 }
 
-void EditorQGadget::mostrar()
+void EditorQGadget::edit()
 {
+    QEventLoop event;
+    QObject::connect(this, &EditorQGadget::closeProcess, &event, &QEventLoop::quit);
     show();
+    event.exec();
+}
+
+void EditorQGadget::closeEvent(QCloseEvent *event)
+{
+    emit closeProcess();
+    event->accept();
 }
