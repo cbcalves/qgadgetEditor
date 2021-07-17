@@ -18,7 +18,7 @@ private:
     QString _tipo;
     void *_qGadget;
 
-    void decompor(const QString& tipo, void *qGadget, QWidget* parent);
+    QWidget* decompor(const QString& tipo, void *qGadget);
 
     QLabel* label(const QString& text);
 

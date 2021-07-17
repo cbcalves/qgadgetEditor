@@ -17,9 +17,11 @@ EditorQGadget::EditorQGadget(const QString &tipo, void *qGadget, QWidget *parent
     _tipo(tipo),
     _qGadget(qGadget)
 {
+    setWindowTitle(QStringLiteral("EditorQGadget [%0]").arg(_tipo));
     setMinimumHeight(600);
     setMinimumWidth(600);
-    decompor(_tipo, _qGadget, this);
+    auto child = decompor(_tipo, _qGadget);
+    child->setParent(this);
 }
 
 void EditorQGadget::mostrar()
@@ -27,22 +29,16 @@ void EditorQGadget::mostrar()
     show();
 }
 
-void EditorQGadget::decompor(const QString& tipo, void *qGadget, QWidget* parent)
+QWidget* EditorQGadget::decompor(const QString& tipo, void *qGadget)
 {
     int metaType = QMetaType::type(tipo.toStdString().c_str());
     const QMetaObject *metaObject = QMetaType::metaObjectForType(metaType);
 
-    if (parent == this) {
-        setWindowTitle(QStringLiteral("EditorQGadget [%0]").arg(metaObject->className()));
-    }
-
-    auto frame = new QFrame(parent);
+    auto frame = new QFrame();
     auto layout = new QFormLayout(frame);
 
     frame->setSizePolicy(QSizePolicy::Policy::Expanding, QSizePolicy::Policy::Expanding);
-    frame->setGeometry(QRect(0, 0, 600, 600));
     layout->setSizeConstraint(QLayout::SetNoConstraint);
-    layout->setGeometry(frame->geometry());
 
 
     qDebug() << "META" << metaType;
@@ -80,18 +76,27 @@ void EditorQGadget::decompor(const QString& tipo, void *qGadget, QWidget* parent
                         const QMetaType ptrMetaType (QMetaType::type(readTypeName.toStdString().c_str()));
                         void *ptr = *(static_cast<void**>(read.data()));
 
+                        auto ptrLayout = new QFormLayout();
+
+                        QString name = metaProperty.name();
+                        layout->addRow(label(name), ptrLayout);
+                        name.remove(name.size() - 1, 1);
+
                         for (int j = 0; j < metaObject->property( i - 1 ).readOnGadget(qGadget).toInt(); j++) {
                             ptr = static_cast<char *>(ptr) + ptrMetaType.sizeOf() * j;
-//                            decompor(readTypeName,  ptr, frame);
+                            auto child = decompor(readTypeName, ptr);
+                            ptrLayout->addRow(label(name + QString::number(j + 1)), child);
                         }
                     } else {
-                        decompor(read.typeName(), read.data(), frame);
+                        layout->addRow(label(read.typeName()), decompor(read.typeName(), read.data()));
                     }
                     break;
                 }
             }
         }
     }
+    frame->adjustSize();
+    return frame;
 }
 
 QLabel *EditorQGadget::label(const QString &text)
