@@ -9,6 +9,7 @@
 
 #include "elements/combobox.h"
 #include "elements/spinbox.h"
+#include "elements/doublespinbox.h"
 
 EditorQGadget::EditorQGadget(const QString &tipo, void *qGadget, QWidget *parent) :
     QMainWindow(parent),
@@ -62,6 +63,7 @@ void EditorQGadget::decompor(const QString& tipo, void *qGadget, QWidget* parent
                     qDebug() << metaProperty.name() << read.typeName() << read.toBool();
                     break;
                 case QMetaType::Float:
+                    layout->addRow(label(metaProperty.name()), new DoubleSpinBox(metaProperty, qGadget));
                     qDebug() << metaProperty.name() << read.typeName() << read.toFloat();
                     break;
                 case QMetaType::UChar: // quint8
