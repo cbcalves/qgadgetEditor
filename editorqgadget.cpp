@@ -1,11 +1,6 @@
 #include "editorqgadget.h"
 
 #include <QFrame>
-#include <QFormLayout>
-#include <QLabel>
-#include <QMetaType>
-#include <QMetaProperty>
-#include <QDebug>
 
 #include "elements/qgadgetfactory.h"
 

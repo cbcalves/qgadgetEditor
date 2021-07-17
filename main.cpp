@@ -33,8 +33,8 @@ int main(int argc, char *argv[])
     QVariant test;
     test.setValue(player.m_coordinates);
 
-    auto editor = new EditorQGadget("player::Player", &player);
-    editor->mostrar();
+    EditorQGadget editor("player::Player", &player);
+    editor.mostrar();
 
     return a.exec();
 }

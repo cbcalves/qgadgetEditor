@@ -2,7 +2,6 @@
 #define EDITORQGADGET_H
 
 #include <QMainWindow>
-#include <QLabel>
 
 class EditorQGadget : public QMainWindow
 {

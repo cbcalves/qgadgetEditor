@@ -1,7 +1,5 @@
 #include "combobox.h"
 
-#include <QObject>
-
 ComboBox::ComboBox(const QMetaProperty& metaProperty, void* qGadget, QWidget *parent) :
     QComboBox(parent),
     _metaProperty(metaProperty),
