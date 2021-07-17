@@ -17,11 +17,6 @@ public:
 private:
     QString _tipo;
     void *_qGadget;
-
-    QWidget* decompor(const QString& tipo, void *qGadget);
-
-    QLabel* label(const QString& text);
-
 };
 
 #endif // EDITORQGADGET_H
