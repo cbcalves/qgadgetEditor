@@ -20,6 +20,7 @@ add_executable(editorQGadget
   elements/checkbox.cpp
   elements/combobox.cpp
   elements/doublespinbox.cpp
+  elements/ptrwidget.cpp
   elements/spinbox.cpp
   elements/qgadgetfactory.cpp
   player.h

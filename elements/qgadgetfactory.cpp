@@ -8,6 +8,7 @@
 #include "elements/spinbox.h"
 #include "elements/doublespinbox.h"
 #include "elements/checkbox.h"
+#include "elements/ptrwidget.h"
 
 QWidget *qGadgetFactory::decompose(const QString &tipo, void *qGadget)
 {
@@ -56,22 +57,7 @@ QWidget *qGadgetFactory::decompose(const QString &tipo, void *qGadget)
                     break;
                 default: // ponteiro ou struct
                     if (QString(read.typeName()).contains('*')) {
-                        QString readTypeName(read.typeName());
-                        readTypeName.remove('*');
-                        const QMetaType ptrMetaType (QMetaType::type(readTypeName.toStdString().c_str()));
-                        void *ptr = *(static_cast<void**>(read.data()));
-
-                        auto ptrLayout = new QFormLayout();
-
-                        QString name = metaProperty.name();
-                        layout->addRow(label(name), ptrLayout);
-                        name.remove(name.size() - 1, 1);
-
-                        for (int j = 0; j < qobject_cast<SpinBox*>(last)->value(); j++) {
-                            ptr = static_cast<char *>(ptr) + ptrMetaType.sizeOf() * j;
-                            auto child = decompose(readTypeName, ptr);
-                            ptrLayout->addRow(label(name + QString::number(j + 1)), child);
-                        }
+                        layout->addRow(label(metaProperty.name()), new PtrWidget(metaProperty, qGadget, last));
                     } else {
                         layout->addRow(label(read.typeName()), decompose(read.typeName(), read.data()));
                     }
