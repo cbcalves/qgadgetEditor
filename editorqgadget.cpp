@@ -10,6 +10,7 @@
 #include "elements/combobox.h"
 #include "elements/spinbox.h"
 #include "elements/doublespinbox.h"
+#include "elements/checkbox.h"
 
 EditorQGadget::EditorQGadget(const QString &tipo, void *qGadget, QWidget *parent) :
     QMainWindow(parent),
@@ -60,6 +61,7 @@ void EditorQGadget::decompor(const QString& tipo, void *qGadget, QWidget* parent
             } else {
                 switch(static_cast<QMetaType::Type>(read.type())) {
                 case QMetaType::Bool:
+                    layout->addRow(label(metaProperty.name()), new CheckBox(metaProperty, qGadget));
                     qDebug() << metaProperty.name() << read.typeName() << read.toBool();
                     break;
                 case QMetaType::Float:
@@ -80,7 +82,7 @@ void EditorQGadget::decompor(const QString& tipo, void *qGadget, QWidget* parent
 
                         for (int j = 0; j < metaObject->property( i - 1 ).readOnGadget(qGadget).toInt(); j++) {
                             ptr = static_cast<char *>(ptr) + ptrMetaType.sizeOf() * j;
-                            decompor(readTypeName,  ptr, frame);
+//                            decompor(readTypeName,  ptr, frame);
                         }
                     } else {
                         decompor(read.typeName(), read.data(), frame);

@@ -17,9 +17,10 @@ find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui Widgets REQUIRED)
 add_executable(editorQGadget
   main.cpp
   editorqgadget.cpp
+  elements/checkbox.cpp
   elements/combobox.cpp
-  elements/spinbox.cpp
   elements/doublespinbox.cpp
+  elements/spinbox.cpp
   player.h
   playertype.h
   p2d.h
