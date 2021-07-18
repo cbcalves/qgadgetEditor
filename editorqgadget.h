@@ -1,9 +1,9 @@
 #ifndef EDITORQGADGET_H
 #define EDITORQGADGET_H
 
-#include <QMainWindow>
+#include <QWidget>
 
-class EditorQGadget : public QMainWindow
+class EditorQGadget : public QWidget
 {
 
     Q_OBJECT
@@ -19,9 +19,6 @@ signals:
 protected:
     void closeEvent(QCloseEvent *event) override;
 
-private:
-    QString _tipo;
-    void *_qGadget;
 };
 
 #endif // EDITORQGADGET_H

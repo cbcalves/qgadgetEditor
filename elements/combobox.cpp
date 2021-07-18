@@ -18,7 +18,7 @@ void ComboBox::setup()
     QStringList items;
 
     int keys = _metaProperty.enumerator().keyCount();
-    for (int i = 0; i < keys; i++) {
+    for (int i = 0; i < keys; ++i) {
         items.append(_metaProperty.enumerator().key(i));
     }
 

@@ -1,21 +1,23 @@
 #include "editorqgadget.h"
 
 #include <QFrame>
+#include <QVBoxLayout>
 #include <QEventLoop>
 #include <QCloseEvent>
 
 #include "elements/qgadgetfactory.h"
 
 EditorQGadget::EditorQGadget(const QString &tipo, void *qGadget, QWidget *parent) :
-    QMainWindow(parent),
-    _tipo(tipo),
-    _qGadget(qGadget)
+    QWidget(parent)
 {
-    setWindowTitle(QStringLiteral("EditorQGadget [%0]").arg(_tipo));
-    setMinimumHeight(600);
-    setMinimumWidth(600);
-    auto child = qGadgetFactory::decompose(_tipo, _qGadget);
-    child->setParent(this);
+    setWindowTitle(QStringLiteral("EditorQGadget [%0]").arg(tipo));
+
+    auto boxlayout = new QVBoxLayout;
+    setLayout(boxlayout);
+    boxlayout->setSizeConstraint(QLayout::SetFixedSize);
+
+    auto child = qGadgetFactory::decompose(tipo, qGadget);
+    boxlayout->addWidget(child);
 }
 
 void EditorQGadget::edit()

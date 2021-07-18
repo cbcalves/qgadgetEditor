@@ -1,5 +1,7 @@
 #include "ptrformlayout.h"
 
+#include <QtGlobal>
+
 #include "elements/spinbox.h"
 #include "elements/qgadgetfactory.h"
 
@@ -10,7 +12,6 @@ PtrFormLayout::PtrFormLayout(const QMetaProperty& metaProperty, void* qGadget, Q
     _currentSize(0)
 {
     auto lastSpinBox = qobject_cast<SpinBox*>(last);
-    lastSpinBox->setMinimum(1);
     _currentSize = lastSpinBox->value();
 
     setSizeConstraint(QLayout::SetFixedSize);
@@ -25,16 +26,22 @@ void PtrFormLayout::setup()
     QVariant read = _metaProperty.readOnGadget(_qGadget);
     QString readTypeName(read.typeName());
     readTypeName.remove('*');
-    const QMetaType ptrMetaType (QMetaType::type(readTypeName.toStdString().c_str()));
-    void *ptr = *(static_cast<void**>(read.data()));
 
-    QString name = _metaProperty.name();
-    name.remove(name.size() - 1, 1);
+#if (QT_VERSION >= QT_VERSION_CHECK(6,0,0))
+    const QMetaType ptrMetaType(QMetaType::fromName(readTypeName.toUtf8()));
+#else
+    const QMetaType ptrMetaType(QMetaType::type(readTypeName.toUtf8()));
+#endif
 
-    for (int i = 0; i < _currentSize; i++) {
-        void* showptr = static_cast<char *>(ptr) + ptrMetaType.sizeOf() * i;
-        auto child = qGadgetFactory::decompose(readTypeName, showptr);
-        addRow(qGadgetFactory::label(name + QString::number(i + 1)), child);
+    void *ptrData = *(static_cast<void**>(read.data()));
+
+    QString labelText = _metaProperty.name();
+    labelText.remove(labelText.size() - 1, 1);
+
+    for (int i = 0; i < _currentSize; ++i) {
+        void* currentPtr = static_cast<char *>(ptrData) + ptrMetaType.sizeOf() * i;
+        auto child = qGadgetFactory::decompose(readTypeName, currentPtr);
+        addRow(qGadgetFactory::label(labelText + QString::number(i + 1)), child);
     }
 }
 
@@ -50,20 +57,28 @@ void PtrFormLayout::change(int value)
     QVariant read = _metaProperty.readOnGadget(_qGadget);
     QString readTypeName(read.typeName());
     readTypeName.remove('*');
-    const QMetaType ptrMetaType (QMetaType::type(readTypeName.toStdString().c_str()));
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6,0,0))
+    const QMetaType ptrMetaType(QMetaType::fromName(readTypeName.toUtf8()));
+#else
+    const QMetaType ptrMetaType(QMetaType::type(readTypeName.toUtf8()));
+#endif
 
     auto saveData = static_cast<void**>(read.data());
     auto data = *saveData;
-    if (_currentSize > 0) {
+    if (value > 0 && ptrMetaType.sizeOf()) {
         data = std::realloc(data,  ptrMetaType.sizeOf() * value);
-        for (int i = _currentSize; i < value; i++) {
+        for (int i = _currentSize; i < value; ++i) {
             auto ptr = static_cast<char*>(data) + (ptrMetaType.sizeOf() * i);
             memset(ptr, 0, ptrMetaType.sizeOf());
         }
+    } else {
+       std::free(data);
+       data = nullptr;
     }
     *saveData = data;
 
-    _metaProperty.writeOnGadget(_qGadget, QVariant(read.userType(), saveData));
+    _metaProperty.writeOnGadget(_qGadget, read);
     _currentSize = value;
 
     deleteAll();

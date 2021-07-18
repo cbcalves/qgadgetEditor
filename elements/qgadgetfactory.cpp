@@ -2,6 +2,7 @@
 
 #include <QFrame>
 #include <QFormLayout>
+#include <QtGlobal>
 
 #include "elements/combobox.h"
 #include "elements/spinbox.h"
@@ -11,8 +12,14 @@
 
 QWidget *qGadgetFactory::decompose(const QString &tipo, void *qGadget)
 {
-    int metaType = QMetaType::type(tipo.toStdString().c_str());
-    const QMetaObject *metaObject = QMetaType::metaObjectForType(metaType);
+
+#if (QT_VERSION >= QT_VERSION_CHECK(6,0,0))
+    const QMetaType metaType(QMetaType::fromName(tipo.toUtf8()));
+#else
+    const QMetaType metaType(QMetaType::type(tipo.toUtf8()));
+#endif
+
+    const QMetaObject *metaObject = metaType.metaObject();
 
     auto frame = new QFrame();
     auto layout = new QFormLayout(frame);
@@ -28,7 +35,7 @@ QWidget *qGadgetFactory::decompose(const QString &tipo, void *qGadget)
                 last = new ComboBox(metaProperty, qGadget);
                 layout->addRow(label(metaProperty.name()), last);
             } else {
-                switch(static_cast<QMetaType::Type>(read.type())) {
+                switch(static_cast<QMetaType::Type>(read.userType())) {
                 case QMetaType::Bool:
                     last = new CheckBox(metaProperty, qGadget);
                     layout->addRow(label(metaProperty.name()), last);

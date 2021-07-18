@@ -19,7 +19,7 @@ void SpinBox::setup()
     setValue(read.toInt());
 
     int max = USHRT_MAX;
-    if (static_cast<QMetaType::Type>(read.type()) == QMetaType::UChar) {
+    if (static_cast<QMetaType::Type>(read.userType()) == QMetaType::UChar) {
         max = UCHAR_MAX;
     }
     setRange(0, max);
