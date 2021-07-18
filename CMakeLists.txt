@@ -24,6 +24,7 @@ add_executable(editorQGadget
   elements/spinbox.cpp
   elements/qgadgetfactory.cpp
   players/player.h
+  players/playerbuilder.cpp
   players/playertype.h
   players/p2d.h
 )
