@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.14)
+cmake_minimum_required(VERSION 3.16)
 
 project(editorQGadget LANGUAGES CXX)
 
@@ -10,6 +10,12 @@ set(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
+
+if(MSVC)
+  set(COMPILE_WARNS /W4 /WX)
+else()
+  set(COMPILE_WARNS -Wall -Wextra -pedantic)
+endif()
 
 find_package(QT NAMES Qt6 Qt5 COMPONENTS Core Gui Widgets REQUIRED)
 find_package(Qt${QT_VERSION_MAJOR} COMPONENTS Core Gui Widgets REQUIRED)
